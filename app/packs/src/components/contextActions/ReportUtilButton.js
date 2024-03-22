@@ -30,7 +30,8 @@ const showComputedPropsTasks = () => {
 const ReportUtilButton = ({ customClass }) => {
   const currentUser = (UserStore.getState() && UserStore.getState().currentUser) || {};
   const enableComputedProps = MatrixCheck(currentUser.matrix, 'computedProp');
-  const enableReactionPredict = MatrixCheck(currentUser.matrix, 'reactionPrediction');
+  // const enableReactionPredict = MatrixCheck(currentUser.matrix, 'reactionPrediction');
+  const enableReactionPredict = true;
 
   let graph = <span />;
   let task = <span />;

@@ -8,7 +8,7 @@ import GenericElDetails from 'src/components/generic/GenericElDetails';
 import GraphContainer from 'src/apps/mydb/elements/details/GraphContainer';
 import LiteratureDetails from 'src/apps/mydb/elements/details/LiteratureDetails';
 import MetadataContainer from 'src/components/metadata/MetadataContainer';
-import PredictionContainer from 'src/apps/mydb/elements/details/predictions/PredictionContainer';
+import MlContainer from 'src/apps/mydb/elements/details/predictions/MlContainer';
 import React, { Component } from 'react';
 import ReactionDetails from 'src/apps/mydb/elements/details/reactions/ReactionDetails';
 import ReportContainer from 'src/apps/mydb/elements/details/reports/ReportContainer';
@@ -218,7 +218,7 @@ export default class ElementDetails extends Component {
       case 'report':
         return <ReportContainer report={el} />;
       case 'prediction':
-        return <PredictionContainer prediction={el} />;
+        return <MlContainer prediction={el} />;
       case 'format':
         return <FormatContainer format={el} />;
       case 'graph':

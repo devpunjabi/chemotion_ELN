@@ -1,7 +1,8 @@
-import React from 'react';
+
 import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 import { Button } from 'react-bootstrap';
-import PredictionActions from 'src/stores/alt/actions/PredictionActions';
+import ForwardActions from 'src/stores/alt/actions/ForwardActions';
 import UIActions from 'src/stores/alt/actions/UIActions';
 import DetailActions from 'src/stores/alt/actions/DetailActions';
 import LoadingActions from 'src/stores/alt/actions/LoadingActions';
@@ -26,7 +27,7 @@ const CloseBtn = ({ el }) => {
 };
 
 const clickToReset = () => {
-  PredictionActions.reset();
+  ForwardActions.reset();
   UIActions.uncheckWholeSelection.defer();
 };
 
@@ -41,28 +42,5 @@ const ResetBtn = () => (
   </Button>
 );
 
-const PredictBtn = ({ inputEls, template }) => {
-  const onClick = () => {
-    LoadingActions.start.defer();
-    PredictionActions.infer.defer(inputEls, template);
-  };
-  const disableBtn = inputEls.length === 0;
 
-  return (
-    <Button
-      bsStyle="primary"
-      bsSize="xsmall"
-      className="button-right"
-      disabled={disableBtn}
-      onClick={onClick}
-    >
-      <span><i className="fa fa-file-text-o" /> Predict</span>
-    </Button>
-  );
-};
-
-PredictBtn.propTypes = {
-  inputEls: PropTypes.array.isRequired, // eslint-disable-line react/forbid-prop-types
-};
-
-export { CloseBtn, ResetBtn, PredictBtn };
+export { CloseBtn, ResetBtn };

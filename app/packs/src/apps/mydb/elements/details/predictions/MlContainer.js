@@ -13,6 +13,7 @@ import { CloseBtn, ResetBtn } from './ForwardComponent';
 import RetroContainer from './RetroContainer';
 import TemplateContainer from './TemplateContainer';
 import ForCont from './ForCont';
+import ImpurityContainer from './ImpurityContainer';
 
 
 class MlContainer extends Component {
@@ -111,7 +112,7 @@ class MlContainer extends Component {
           </Tab> */}
           <Tab eventKey={3} title="Impurity Prediction">
             <div>
-
+            <ImpurityContainer width={100} height={100} />
               {/* <Serials selMolSerials={selMolSerials} template={template} /> */}
             </div>
           </Tab>

@@ -34,6 +34,13 @@ module Ai::Forwardinf
     end
   end
 
+  def self.fetchTask(task_id)
+    options = { verify: false }
+    task_url = "https://172.21.39.236/api/v2/celery/task/{task_id}"
+    task_rsp = HTTParty.get(task_url, options)
+    task_rsp
+  end
+
   def self.fetchSvg(smiles)
 
     options = { verify: false }
@@ -125,6 +132,29 @@ module Ai::Forwardinf
       err_body
     end
   end
+
+  def self.impurity(params)
+
+    options = {
+      body: params,
+      verify: false
+
+    }
+
+    begin
+      url = "https://172.21.39.236/api/v2/impurity/"
+      rsp = HTTParty.post(url, options)
+      json = JSON.parse(rsp.body)
+
+      json
+
+    rescue StandardError => e
+      err_body = { 'error' => "Prediction Server not found. Please try again later. Error: #{e.message}" }
+      puts e.backtrace.join("\n") # Print the error stack trace to the console
+      err_body
+    end
+  end
+
 
   def self.retrov2(params)
 

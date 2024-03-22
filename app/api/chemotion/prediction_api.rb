@@ -50,6 +50,19 @@ module Chemotion
         end
       end
 
+      resource :impurity do
+        desc 'Impurity Prediction'
+        params do
+          optional :reactants, type: String
+          optional :reagents, type: String
+          optional :product, type: String
+          optional :solvent, type: String
+        end
+        post do
+          Ai::Forwardinf.impurity(params)
+        end
+      end
+
       resource :template do
         desc 'Template info'
         params do
@@ -69,6 +82,17 @@ module Chemotion
         post do
           smis = params[:smiles]
           Ai::Forwardinf.fetchSvg(smis)
+        end
+      end
+
+      resource :celery do
+        desc 'Fetch celery task status by id'
+        params do
+          requires :task_id, type: String
+        end
+        post do
+          task_id = params[:task_id]
+          Ai::Forwardinf.fetchTask(task_id)
         end
       end
 

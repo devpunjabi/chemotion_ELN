@@ -4,11 +4,8 @@ import PropTypes from 'prop-types';
 import { Panel, Tabs, Tab } from 'react-bootstrap';
 import ForwardActions from 'src/stores/alt/actions/ForwardActions';
 import ForwardStore from 'src/stores/alt/stores/ForwardStore';
-import UIStore from 'src/stores/alt/stores/UIStore';
-import ForwardContainer from './ForwardContainer';
-import SCSform from './SCSContainer';
 
-// import Content from './Content';
+
 import PanelHeader from 'src/components/common/PanelHeader';
 
 import { CloseBtn, ResetBtn } from './ForwardComponent';

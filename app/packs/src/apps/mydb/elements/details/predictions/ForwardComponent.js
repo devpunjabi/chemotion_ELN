@@ -1,11 +1,9 @@
 
-import PropTypes from 'prop-types';
-import React, { Component } from 'react';
+import React from 'react';
 import { Button } from 'react-bootstrap';
 import ForwardActions from 'src/stores/alt/actions/ForwardActions';
 import UIActions from 'src/stores/alt/actions/UIActions';
 import DetailActions from 'src/stores/alt/actions/DetailActions';
-import LoadingActions from 'src/stores/alt/actions/LoadingActions';
 
 const clickToClose = (el) => {
   DetailActions.close(el);

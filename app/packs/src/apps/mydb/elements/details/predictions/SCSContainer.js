@@ -8,7 +8,6 @@ import {
 
 
 const SCSButton = () => {
-    // const {product} = retroState;
   
     const onClick = () => {
       const params = {

@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
 import ImpurityFetcher from 'src/fetchers/ImpurityFetcher';
+import CeleryTaskFetcher from '../../../../../fetchers/CeleryTaskFetcher';
+import { ProgressBar } from 'react-bootstrap'; // Import ProgressBar from react-bootstrap
+
 const styles = {
     image: {
       maxWidth: '100%',
@@ -44,7 +47,9 @@ class ImpurityContainer extends Component {
       product: '',
       solvent: '',
       apiResponse: null,
-      taskStatus: null
+      taskStatus: null,
+      taskMessage: '',
+      prediction : [], 
     };
   }
 
@@ -63,13 +68,17 @@ class ImpurityContainer extends Component {
 
   pollTaskStatus = (taskId) => {
     // Polling task status
+    const params = {task_id : taskId};
     const interval = setInterval(() => {
-      axios.get(`celery-api-endpoint/${taskId}`)
+
+      CeleryTaskFetcher.fetchtask(params)
       .then(response => {
         // Update task status
-        this.setState({ taskStatus: response.state });
+        this.setState({ taskStatus: response.state, taskMessage: response.message });
+
         // Check if task is completed
         if (response.state === 'SUCCESS' || response.state === 'FAILURE') {
+          this.setState({prediction : response.output.predict_expand})
           clearInterval(interval); // Stop polling
         }
       })
@@ -100,7 +109,57 @@ class ImpurityContainer extends Component {
   };
 
   render() {
-    const { apiResponse } = this.state;
+    const { apiResponse, taskStatus , taskMessage, prediction } = this.state;
+
+    const columns = [
+      { displayName: 'No.', keyName: 'no' },
+      { displayName: 'Predicted Impuritites', keyName: 'prd_smiles' },
+      { displayName: 'Possible mechanisms', keyName: 'modes_name' },
+      { displayName: 'Inspector score', keyName: 'avg_insp_score' },
+      { displayName: 'Similarity score', keyName: 'similarity_to_major' }
+
+
+    ];
+
+    const progressMap = {
+      'Impurity prediction started.': 25,
+      'Mode 1: normal prediction': 50,
+      'Mode 2: over-reaction': 75,
+      'Mode 3: dimerization': 95,
+      'Task complete!': 100
+    };
+
+    // Get progress value based on task message
+    const progress = progressMap[taskMessage] || 0;
+
+
+    // Define progress bar variant and label based on task status
+    let variant = 'info'; // Default variant
+    let label = 'In Progress'; // Default label
+    if (taskStatus === 'SUCCESS') {
+      variant = 'success';
+      label = 'Completed';
+    } 
+    else if (taskStatus === 'FAILURE') {
+      variant = 'danger';
+      label = 'Failed';
+    }
+    else if (taskMessage === 'Impurity prediction started.') {
+      variant = 'info';
+      label = 'In Progress';
+    }
+    else if (taskMessage === 'Mode 1: normal prediction') {
+      variant = 'info';
+      label = 'Mode 1: normal prediction';
+    }
+    else if (taskMessage === 'Mode 2: over-reaction') {
+      variant = 'info';
+      label = 'Mode 2: over-reaction';
+    }
+    else if (taskMessage === 'Mode 3: dimerization') {
+      variant = 'info';
+      label = 'Mode 3: dimerization';
+    }
 
     return (
         <div className='container'>
@@ -137,7 +196,37 @@ class ImpurityContainer extends Component {
           />  
         </div>
         <button onClick={this.fetchApiResponse} style={{ justifyContent: 'center', padding: '8px 16px', borderRadius: '4px', background: 'gray', color: '#fff', border: 'none' }}>Predict Impurities</button>
+        <br></br>
+        <div style={{ marginTop: '16px' }}>{apiResponse &&
+        <div> 
+        <ProgressBar animated now={progress} variant={variant} label={label} />
+        {taskStatus === 'SUCCESS' && (
+          <>
+          <table style={{ borderSpacing: '10px' }}>
+          <thead>
+            <tr>
+              {columns.map((column, index) => (
+                <th key={index } style={{ padding: '10px' }}>{column.displayName}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+          {prediction.map((item, rowIndex) => (
+              <tr key={rowIndex}>
+                {columns.map((column, colIndex) => (
+                  <td key={colIndex} style={{ padding: '10px' }}>{item[column.keyName]}</td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        </>)
+        }
+      </div>
         
+        }
+        </div>
+
       </div>
     );
   }

@@ -21,12 +21,7 @@ export default class CeleryTaskFetcher {
           message: json.error,
           level: 'error'
         });
-      } else {
-        NotificationActions.add.defer({
-          message: 'Fetch Success!',
-          level: 'success'
-        });
-      }
+      } 
       
       return json;
     }).catch((errorMessage) => {

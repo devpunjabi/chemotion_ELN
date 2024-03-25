@@ -36,7 +36,7 @@ module Ai::Forwardinf
 
   def self.fetchTask(task_id)
     options = { verify: false }
-    task_url = "https://172.21.39.236/api/v2/celery/task/{task_id}"
+    task_url = "https://172.21.39.236/api/v2/celery/task/#{task_id}"
     task_rsp = HTTParty.get(task_url, options)
     task_rsp
   end

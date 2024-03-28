@@ -96,6 +96,17 @@ module Chemotion
         end
       end
 
+      # resource :svgfetcher do
+      #   desc 'Fetch celery task status by id'
+      #   params do
+      #     requires :obj_arr, type: Array
+      #   end
+      #   post do
+      #     obj_arr = params[:obj_arr]
+      #     Ai::Forwardinf.addSvg(obj_arr)
+      #   end
+      # end
+
       
     end
   end

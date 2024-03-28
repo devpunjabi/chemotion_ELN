@@ -75,9 +75,9 @@ class ImpurityContainer extends Component {
       .then(response => {
         // Update task status
         this.setState({ taskStatus: response.state, taskMessage: response.message });
-
         // Check if task is completed
         if (response.state === 'SUCCESS' || response.state === 'FAILURE') {
+          console.log(response)
           this.setState({prediction : response.output.predict_expand})
           clearInterval(interval); // Stop polling
         }
@@ -213,9 +213,17 @@ class ImpurityContainer extends Component {
           <tbody>
           {prediction.map((item, rowIndex) => (
               <tr key={rowIndex}>
-                {columns.map((column, colIndex) => (
+                {/* {columns.map((column, colIndex) => (
                   <td key={colIndex} style={{ padding: '10px' }}>{item[column.keyName]}</td>
-                ))}
+                ))} */}
+                <td style={{ padding: '10px' }}>{item['no']}</td>
+                {/* <td style={{ padding: '10px' }}>{item['prd_smiles']}</td> */}
+                <td style={{ padding: '10px' }}>
+                  {<img src={`data:image/png;base64,${item['svg']}`} alt="SVG"/>}
+                </td>
+                <td style={{ padding: '10px' }}>{item['modes_name']}</td>
+                <td style={{ padding: '10px' }}>{item['avg_insp_score']}</td>
+                <td style={{ padding: '10px' }}>{item['similarity_to_major']}</td>
               </tr>
             ))}
           </tbody>

@@ -21,6 +21,14 @@ module Ai::Forwardinf
   # end
 
 
+  def self.addSvg(obj_arr)
+    return unless obj_arr.is_a?(Array)
+
+    obj_arr.each do |mol|
+      mol['svg'] = fetchSvg(mol['prd_smiles'])
+    # Recursively process the children nodes
+    end
+  end
 
   def self.addSvgData(nodes)
     return unless nodes.is_a?(Array)
@@ -38,7 +46,11 @@ module Ai::Forwardinf
     options = { verify: false }
     task_url = "https://172.21.39.236/api/v2/celery/task/#{task_id}"
     task_rsp = HTTParty.get(task_url, options)
-    task_rsp
+    json = JSON.parse(task_rsp.body)
+    if json['message'] == 'Task complete!'
+      addSvg(json['output']['predict_expand'])
+    end
+    json
   end
 
   def self.fetchSvg(smiles)

@@ -2,8 +2,7 @@
 import 'whatwg-fetch';
 
 export default class SvgFetcher {
-  static fetchsvg(smiles) {
-    console.log(smiles)
+  static fetchsvg(params) {
     const promise = fetch(`/api/v1/svgfetcher`,{
       credentials: 'same-origin',
       method: 'POST',
@@ -11,7 +10,7 @@ export default class SvgFetcher {
         'Accept': 'application/json',
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify(smiles),
+      body: JSON.stringify(params),
     }).then((response) => {
       console.log(response);
       return response.json();

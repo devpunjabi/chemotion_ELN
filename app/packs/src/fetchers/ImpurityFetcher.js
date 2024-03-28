@@ -23,7 +23,7 @@ export default class ImpurityFetcher {
         });
       } else {
         NotificationActions.add.defer({
-          message: 'Fetch Success!',
+          message: 'Task Submitted!',
           level: 'success'
         });
       }

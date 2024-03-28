@@ -284,7 +284,7 @@ class ForCont extends Component {
           <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
             <img
               style={{width: '50px'}}
-              src="/images/molecules/chem.png" alt="chem"
+              src="~/assets/images/chem.png" alt="chem"
             />
            <p style={ {justifyContent: 'center'} }><b>{ data.smiles }</b></p>
           

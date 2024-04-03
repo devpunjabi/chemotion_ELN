@@ -1,25 +1,17 @@
 require 'uri'
+require 'yaml'
+
+# Load the YAML configuration file
+config = YAML.load_file('inference.yml')
+
+# Access the 'prediction' section of the configuration
+prediction_config = config['prediction']
+
+# Access the 'url' field within the 'prediction' section
+askcos_url = prediction_config[:url]
+
 
 module Ai::Forwardinf
-  # def self.products(smis)
-  #   url = Rails.configuration.inference.url
-  #   port = Rails.configuration.inference.port
-  #   body = { reactants: [smis.join('.')] }
-  #   begin
-  #     rsp = HTTParty.post(
-  #       # "http://#{url}:#{port}/forward",
-  #       "https://172.21.39.236/api/forward",
-  #       body: body.to_json,
-  #       timeout: 30,
-  #       headers: { 'Content-Type' => 'application/json' },
-  #     )
-  #     JSON.parse(rsp.body)[0]
-  #   rescue
-  #     err_body = { 'error' => 'Prediction Sever not found. Please try again later.' }
-  #     err_body
-  #   end
-  # end
-
 
   def self.addSvg(obj_arr)
     return unless obj_arr.is_a?(Array)
@@ -44,7 +36,7 @@ module Ai::Forwardinf
 
   def self.fetchTask(task_id)
     options = { verify: false }
-    task_url = "https://172.21.39.236/api/v2/celery/task/#{task_id}"
+    task_url = "https://#{askcos_url}/api/v2/celery/task/#{task_id}"
     task_rsp = HTTParty.get(task_url, options)
     json = JSON.parse(task_rsp.body)
     if json['message'] == 'Task complete!'
@@ -57,7 +49,7 @@ module Ai::Forwardinf
 
     options = { verify: false }
     encoded_smiles = URI::encode(smiles, '[]/()+-.@#=\\')
-    svg_url = "https://172.21.39.236/api/v2/draw/?smiles=#{encoded_smiles}&transparent=True"
+    svg_url = "https://#{askcos_url}/api/v2/draw/?smiles=#{encoded_smiles}&transparent=True"
     svg_rsp = HTTParty.get(svg_url, options)
     encoded_svg = Base64.strict_encode64(svg_rsp.body) # Encode SVG data using Base64
     encoded_svg
@@ -66,14 +58,14 @@ module Ai::Forwardinf
   def self.fetchBuyables(smiles)
     options = { verify: false }
     encoded_smiles = URI::encode(smiles, '[]/()+-.@#=\\')
-    buy_url = "https://172.21.39.236/api/v2/buyables/?q=#{encoded_smiles}"
+    buy_url = "https://#{askcos_url}/api/v2/buyables/?q=#{encoded_smiles}"
     buyables = HTTParty.get(buy_url, options)
     buyables
   end
 
   def self.fetchTemplate(template_id)
     options = { verify: false }
-    template_url = "https://172.21.39.236/api/v2/template/#{template_id}"
+    template_url = "https://#{askcos_url}/api/v2/template/#{template_id}"
     template_resp = HTTParty.get(template_url, options)
     encoded_smiles = URI.encode_www_form_component(template_resp['template']['reaction_smarts'])
 
@@ -91,7 +83,7 @@ module Ai::Forwardinf
     sol = URI.encode_www_form_component(solvent)
     numr = num_res
     begin
-      url = "https://172.21.39.236/api/forward/?reactants=#{reac}&reagents=#{reag}&solvent=#{sol}&num_results=#{numr}"
+      url = "https://#{askcos_url}/api/forward/?reactants=#{reac}&reagents=#{reag}&solvent=#{sol}&num_results=#{numr}"
       rsp = HTTParty.get(url, options)
       json = JSON.parse(rsp.body)   
       if flag
@@ -125,7 +117,7 @@ module Ai::Forwardinf
     encoded_smiles = URI::encode(smis, '[]/()+-.@#=\\')
 
     begin
-      url = "https://172.21.39.236/api/treebuilder/?smiles=#{encoded_smiles}&filter_threshold=0.6"
+      url = "https://#{askcos_url}/api/treebuilder/?smiles=#{encoded_smiles}&filter_threshold=0.6"
       rsp = HTTParty.get(url, options)
       json = JSON.parse(rsp.body)
 
@@ -154,7 +146,7 @@ module Ai::Forwardinf
     }
 
     begin
-      url = "https://172.21.39.236/api/v2/impurity/"
+      url = "https://#{askcos_url}/api/v2/impurity/"
       rsp = HTTParty.post(url, options)
       json = JSON.parse(rsp.body)
 
@@ -219,7 +211,7 @@ module Ai::Forwardinf
 
 
     begin
-      url = "https://172.21.39.236/api/v2/tree-builder/"
+      url = "https://#{askcos_url}/api/v2/tree-builder/"
       rsp = HTTParty.post(url, options)
       json = JSON.parse(rsp.body)
 
@@ -248,7 +240,7 @@ module Ai::Forwardinf
     options = { :verify => false}
 
     begin
-      url = "https://172.21.39.236/api/v2/draw/smiles=#{smis}&input_type=#{inp_type}&transparent=True"
+      url = "https://#{askcos_url}/api/v2/draw/smiles=#{smis}&input_type=#{inp_type}&transparent=True"
       rsp = HTTParty.get(url, options)
       json = JSON.parse(rsp.body)
       
